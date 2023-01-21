@@ -24,7 +24,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 //user
 Route::get('/user', [UserController::class, 'show']);
 Route::get('/user/{id}', [UserController::class, 'detail']);
-Route::post('/user', [UserController::class, 'store']);
+Route::post('/user', [UserController::class, 'register']);
 Route::put('/user/{id}', [UserController::class, 'update']);
 Route::delete('/user/{id}', [UserController::class, 'destroy']);
 Route::post('/user/image/{id}', [UserController::class, 'uploadImage']);

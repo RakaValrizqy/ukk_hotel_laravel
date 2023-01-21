@@ -17,7 +17,7 @@ class UserController extends Controller
         return Response()->json($dt_user);
     }
 
-    public function store(Request $req) {
+    public function register(Request $req) {
         $validator = Validator::make($req->all(),
         [
             'user_name'=>'required|unique:user',
