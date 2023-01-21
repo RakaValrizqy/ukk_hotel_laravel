@@ -38,7 +38,12 @@ class UserController extends Controller
         ]);
 
         if($save){
-            return Response()->json(['status' => true, 'message' => 'Succeed Add User']);
+            $data = Users::where('email', $req->email)->get();
+            return Response()->json(
+                ['status' => true, 
+                'message' => 'Succeed Add User',
+                'data' => $data
+            ]);
         }
         else {
             return Response()->json(['status' => false, 'message' => 'Failed Add User']);

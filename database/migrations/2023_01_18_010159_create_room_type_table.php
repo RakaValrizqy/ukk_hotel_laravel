@@ -18,7 +18,7 @@ class CreateRoomTypeTable extends Migration
             $table->string('room_type_name', 100);
             $table->integer('price');
             $table->text('description');
-            $table->text('image');
+            $table->text('image')->nullable();
         });
     }
 

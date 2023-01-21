@@ -18,8 +18,7 @@ class RoomTypeController extends Controller
         $validator = Validator::make($req->all(),[
             'room_type_name'=>'required',
             'price'=>'required|integer',
-            'description'=>'required',
-            'image'=>'required'
+            'description'=>'required'
         ]);
 
         if($validator->fails()){
@@ -29,8 +28,7 @@ class RoomTypeController extends Controller
         $save = RoomType::create([
             'room_type_name' => $req->get('room_type_name'),
             'price' => $req->get('price'),
-            'description' => $req->get('description'),
-            'image' => $req->get('image')
+            'description' => $req->get('description')
         ]);
 
         if($save){
