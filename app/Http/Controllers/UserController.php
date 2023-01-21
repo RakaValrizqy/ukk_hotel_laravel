@@ -21,7 +21,6 @@ class UserController extends Controller
         $validator = Validator::make($req->all(),
         [
             'user_name'=>'required|unique:user',
-            'image'=>'required',
             'email'=>'required|email|unique:user',
             'password'=>'required',
             'role'=>'required'
@@ -33,7 +32,6 @@ class UserController extends Controller
 
         $save = Users::create([
             'user_name' => $req->get('user_name'),
-            'image' => $req->get('image'),
             'email' => $req->get('email'),
             'password' => Hash::make($req->get('password')),
             'role' => $req->get('role')
@@ -68,7 +66,6 @@ class UserController extends Controller
         $validator = Validator::make($req->all(),
         [
             'user_name'=>'required|unique:user',
-            'image'=>'required',
             'email'=>'required|email|unique:user',
             'password'=>'required',
             'role'=>'required'
@@ -80,7 +77,6 @@ class UserController extends Controller
 
         $ubah = Users::where('user_id', $id)->update([
             'user_name' => $req->get('user_name'),
-            'image' => $req->get('image'),
             'email' => $req->get('email'),
             'password' => Hash::make($req->get('password')),
             'role' => $req->get('role')
