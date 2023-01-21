@@ -12,5 +12,5 @@ class Users extends Model
     protected $table = 'user';
     protected $primaryKey = 'user_id';
     public $timestamps = false;
-    protected $fillable = ['username', 'image', 'email', 'password', 'role'];
+    protected $fillable = ['user_name', 'image', 'email', 'password', 'role'];
 }

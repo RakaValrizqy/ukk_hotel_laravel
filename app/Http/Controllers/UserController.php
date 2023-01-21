@@ -20,7 +20,7 @@ class UserController extends Controller
     public function store(Request $req) {
         $validator = Validator::make($req->all(),
         [
-            'username'=>'required|unique:user',
+            'user_name'=>'required|unique:user',
             'image'=>'required',
             'email'=>'required|email|unique:user',
             'password'=>'required',
@@ -32,7 +32,7 @@ class UserController extends Controller
         }
 
         $save = Users::create([
-            'username' => $req->get('username'),
+            'user_name' => $req->get('user_name'),
             'image' => $req->get('image'),
             'email' => $req->get('email'),
             'password' => Hash::make($req->get('password')),
@@ -67,7 +67,7 @@ class UserController extends Controller
     public function update($id, Request $req) {
         $validator = Validator::make($req->all(),
         [
-            'username'=>'required|unique:user',
+            'user_name'=>'required|unique:user',
             'image'=>'required',
             'email'=>'required|email|unique:user',
             'password'=>'required',
@@ -79,7 +79,7 @@ class UserController extends Controller
         }
 
         $ubah = Users::where('user_id', $id)->update([
-            'username' => $req->get('username'),
+            'user_name' => $req->get('user_name'),
             'image' => $req->get('image'),
             'email' => $req->get('email'),
             'password' => Hash::make($req->get('password')),
@@ -87,7 +87,7 @@ class UserController extends Controller
         ]);
 
         if($ubah) {
-            $data = Users::where('username', '=', $req->username)->get();
+            $data = Users::where('user_name', '=', $req->user_name)->get();
             return Response()->json([
                 'status' => true, 
                 'message' => 'Succeed update data',
