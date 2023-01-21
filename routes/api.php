@@ -31,4 +31,8 @@ Route::post('/user/image/{id}', [UserController::class, 'uploadImage']);
 
 //room type
 Route::get('/roomtype', [RoomTypeController::class, 'show']);
+Route::get('/roomtype/{id}', [RoomTypeController::class, 'detail']);
 Route::post('/roomtype', [RoomTypeController::class, 'store']);
+Route::put('/roomtype/{id}', [RoomTypeController::class, 'update']);
+Route::delete('/roomtype/{id}', [RoomTypeController::class, 'destroy']);
+Route::post('/roomtype/image/{id}', [RoomTypeController::class, 'uploadImage']);

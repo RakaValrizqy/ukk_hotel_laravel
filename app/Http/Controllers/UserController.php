@@ -122,7 +122,7 @@ class UserController extends Controller
             ]);
 
         if($ubah) {
-            $data = Users::where('user_id', '=', $req->user_id)->get();
+            $data = Users::where('user_id', '=', $id)->get();
             return Response()->json(
                 [
                     'status' => true,
