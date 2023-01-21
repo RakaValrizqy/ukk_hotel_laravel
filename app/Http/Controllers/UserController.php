@@ -20,7 +20,7 @@ class UserController extends Controller
     public function register(Request $req) {
         $validator = Validator::make($req->all(),
         [
-            'user_name'=>'required|unique:user',
+            'user_name'=>'required',
             'email'=>'required|email|unique:user',
             'password'=>'required',
             'role'=>'required'
@@ -70,7 +70,7 @@ class UserController extends Controller
     public function update($id, Request $req) {
         $validator = Validator::make($req->all(),
         [
-            'user_name'=>'required|unique:user',
+            'user_name'=>'required',
             'email'=>'required|email|unique:user',
             'password'=>'required',
             'role'=>'required'
