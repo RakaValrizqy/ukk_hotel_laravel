@@ -21,6 +21,7 @@ class UserController extends Controller
         $validator = Validator::make($req->all(),
         [
             'user_name'=>'required',
+            'image' => 'required|image|mimes:jpeg,jpg,png',
             'email'=>'required|email|unique:user',
             'password'=>'required',
             'role'=>'required'
@@ -30,8 +31,12 @@ class UserController extends Controller
             return Response()->json($validator->errors()->toJson());
         }
 
+        $imageName = time().'.'.request()->image->getClientOriginalExtension();
+        request()->image->move(public_path('user_image'),$imageName);
+
         $save = Users::create([
             'user_name' => $req->get('user_name'),
+            'image' => $imageName,
             'email' => $req->get('email'),
             'password' => Hash::make($req->get('password')),
             'role' => $req->get('role')
