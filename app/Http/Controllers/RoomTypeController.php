@@ -26,7 +26,7 @@ class RoomTypeController extends Controller
 
     public function store(Request $req){
         $validator = Validator::make($req->all(),[
-            'room_type_name'=>'required',
+            'room_type_name'=>'required|unique:room_type',
             'price'=>'required|integer',
             'description'=>'required',
             'image' => 'required|image|mimes:jpeg,jpg,png'
@@ -47,7 +47,12 @@ class RoomTypeController extends Controller
         ]);
 
         if($save){
-            return Response()->json(['status' => true, 'message' => 'Succeed Add Room Type']);
+            $dt = RoomType::where('room_type_name', $req->room_type_name)->get();
+            return Response()->json([
+                'status' => true, 
+                'message' => 'Succeed Add Room Type',
+                'data' => $dt
+            ]);
         }
         else {
             return Response()->json(['status' => false, 'message' => 'Failed Add Room Type']);
