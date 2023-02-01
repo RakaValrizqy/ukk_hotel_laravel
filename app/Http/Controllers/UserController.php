@@ -76,7 +76,7 @@ class UserController extends Controller
         $validator = Validator::make($req->all(),
         [
             'user_name'=>'required',
-            'email'=>'required|email|unique:user',
+            'email'=>'required|email',
             'password'=>'required',
             'role'=>'required'
         ]);
@@ -93,7 +93,7 @@ class UserController extends Controller
         ]);
 
         if($ubah) {
-            $data = Users::where('user_name', '=', $req->user_name)->get();
+            $data = Users::where('user_id', '=', $id)->get();
             return Response()->json([
                 'status' => true, 
                 'message' => 'Succeed update data',
