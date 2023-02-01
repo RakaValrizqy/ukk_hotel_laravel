@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RoomTypeController;
+use App\Http\Controllers\RoomController;
 use App\Models\User;
 
 /*
@@ -36,3 +37,10 @@ Route::post('/roomtype', [RoomTypeController::class, 'store']);
 Route::put('/roomtype/{id}', [RoomTypeController::class, 'update']);
 Route::delete('/roomtype/{id}', [RoomTypeController::class, 'destroy']);
 Route::post('/roomtype/image/{id}', [RoomTypeController::class, 'uploadImage']);
+
+//room
+Route::get('/room', [RoomController::class, 'show']);
+Route::post('/room', [RoomController::class, 'store']);
+Route::get('/room/{id}', [RoomController::class, 'detail']);
+Route::put('/room/{id}', [RoomController::class, 'update']);
+Route::delete('/room/{id}', [RoomController::class, 'destroy']);

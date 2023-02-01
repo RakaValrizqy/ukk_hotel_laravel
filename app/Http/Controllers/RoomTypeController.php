@@ -75,7 +75,7 @@ class RoomTypeController extends Controller
                 ]);
             }
             else {
-                return response()->json(['status' => false, 'Message' => 'Failed update data']);
+                return response()->json(['status' => false, 'message' => 'Failed update data']);
             }
     }
 
