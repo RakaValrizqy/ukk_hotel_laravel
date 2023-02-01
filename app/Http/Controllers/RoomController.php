@@ -11,7 +11,7 @@ class RoomController extends Controller
 {
     public function store(Request $req){
         $validator = Validator::make($req->all(),[
-            'room_number' => 'required',
+            'room_number' => 'required|unique:room',
             'room_type_id' => 'required'
         ]);
 
@@ -25,7 +25,16 @@ class RoomController extends Controller
         ]);
 
         if($save){
-            return response()->json(['status' => true, 'message' => 'Succeed Add Room']);
+            // $dt = Room::where('room_number', $req->room_number)->get();
+            $dt = Room::select('room.*', 'room_type.*')
+                ->join('room_type', 'room_type.room_type_id', '=', 'room.room_type_id')
+                ->where('room.room_number', $req->room_number)
+                ->get();
+            return response()->json([
+                'status' => true, 
+                'message' => 'Succeed Add Room',
+                'data' => $dt
+            ]);
         }
         else {
             return response()->json(['status' => false, 'message' => 'Failed Add Room']);
@@ -33,13 +42,18 @@ class RoomController extends Controller
     }
 
     public function show(){
-        $dt = Room::get();
+        $dt = Room::select('room.*', 'room_type.*')
+                ->join('room_type', 'room_type.room_type_id', '=', 'room.room_type_id')
+                ->get();
         return response()->json($dt);
     }
 
     public function detail($id){
         if(Room::where('room_id', $id)->exists()){
-            $dt = Room::where('room_id', $id)->first();
+            $dt = Room::select('room.*', 'room_type.*')
+                ->join('room_type', 'room_type.room_type_id', '=', 'room.room_type_id')
+                ->where('room.room_id', $id)
+                ->first();
             return response()->json($dt);
         }
         else {
@@ -63,7 +77,10 @@ class RoomController extends Controller
         ]);
 
         if($update){
-            $dt = Room::where('room_id', $id)->get();
+            $dt = Room::select('room.*', 'room_type.*')
+                ->join('room_type', 'room_type.room_type_id', '=', 'room.room_type_id')
+                ->where('room.room_number', $req->room_number)
+                ->get();
             return response()->json([
                 'status' => true,
                 'message' => 'Succeed update data',
