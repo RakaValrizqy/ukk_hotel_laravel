@@ -28,17 +28,22 @@ class RoomTypeController extends Controller
         $validator = Validator::make($req->all(),[
             'room_type_name'=>'required',
             'price'=>'required|integer',
-            'description'=>'required'
+            'description'=>'required',
+            'image' => 'required|image|mimes:jpeg,jpg,png'
         ]);
 
         if($validator->fails()){
             return Response()->json($validator->errors()->toJson());
         }
 
+        $imageName = time().'.'.request()->image->getClientOriginalExtension();
+        request()->image->move(public_path('roomtype_image'),$imageName);
+
         $save = RoomType::create([
             'room_type_name' => $req->get('room_type_name'),
             'price' => $req->get('price'),
-            'description' => $req->get('description')
+            'description' => $req->get('description'),
+            'image' => $imageName,
         ]);
 
         if($save){
