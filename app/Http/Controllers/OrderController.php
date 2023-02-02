@@ -47,17 +47,21 @@ class OrderController extends Controller
         ]);
 
         if($save){
-            $dt = Order::where('order_number', $req->order_number)->get();
+            $dt = Order::select('order.*', 'room_type.room_type_id', 'room_type.room_type_name', 'user.user_id', 'user.user_name')
+            ->join('room_type', 'room_type.room_type_id', '=', 'order.room_type_id')
+            ->join('user', 'user.user_id', '=', 'order.user_id')
+            ->where('order_number', $req->order_number)
+            ->get();
             return response()->json([
                 'status' => true,
-                'message' => 'Succeed Ordering',
+                'message' => 'Succeed Order Room',
                 'data' => $dt
             ]);
         }
         else {
             return response()->json([
                 'status' => false,
-                'message' => 'Failed Ordering'
+                'message' => 'Failed Order Room'
             ]);
         }
     }
