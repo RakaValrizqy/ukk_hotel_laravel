@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RoomTypeController;
 use App\Http\Controllers\RoomController;
+use App\Http\Controllers\OrderController;
 use App\Models\User;
 
 /*
@@ -44,3 +45,6 @@ Route::post('/room', [RoomController::class, 'store']);
 Route::get('/room/{id}', [RoomController::class, 'detail']);
 Route::put('/room/{id}', [RoomController::class, 'update']);
 Route::delete('/room/{id}', [RoomController::class, 'destroy']);
+
+//order
+Route::post('/order', [OrderController::class, 'store']);

@@ -9,7 +9,7 @@ class Room extends Model
 {
     use HasFactory;
     protected $table = 'room';
-    protected $primaryKet = 'room_id';
+    protected $primaryKey = 'room_id';
     public $timestamps = false;
     protected $fillable = ['room_number', 'room_type_id'];
 }
