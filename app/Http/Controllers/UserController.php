@@ -24,7 +24,7 @@ class UserController extends Controller
             'user_name'=>'required',
             'image' => 'required|image|mimes:jpeg,jpg,png',
             'email'=>'required|email|unique:user',
-            'password'=>'required',
+            'password'=>'required|confirmed',
             'role'=>'required'
         ]);
 
@@ -78,7 +78,7 @@ class UserController extends Controller
         [
             'user_name'=>'required',
             'email'=>'required|email|unique:user',
-            'password'=>'required',
+            'password'=>'required|confirmed',
             'role'=>'required'
         ]);
 
