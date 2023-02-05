@@ -23,28 +23,37 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-//user
-Route::get('/user', [UserController::class, 'show']);
-Route::get('/user/{id}', [UserController::class, 'detail']);
 Route::post('/user', [UserController::class, 'register']);
-Route::put('/user/{id}', [UserController::class, 'update']);
-Route::delete('/user/{id}', [UserController::class, 'destroy']);
-Route::post('/user/image/{id}', [UserController::class, 'uploadImage']);
+Route::post('/user/login', [UserController::class, 'login']);
 
-//room type
-Route::get('/roomtype', [RoomTypeController::class, 'show']);
-Route::get('/roomtype/{id}', [RoomTypeController::class, 'detail']);
-Route::post('/roomtype', [RoomTypeController::class, 'store']);
-Route::put('/roomtype/{id}', [RoomTypeController::class, 'update']);
-Route::delete('/roomtype/{id}', [RoomTypeController::class, 'destroy']);
-Route::post('/roomtype/image/{id}', [RoomTypeController::class, 'uploadImage']);
+Route::group(['middleware' => ['jwt.verify']], function(){
+    //user
+    Route::get('/user', [UserController::class, 'show']);
+    Route::get('/user/{id}', [UserController::class, 'detail']);
+    Route::put('/user/{id}', [UserController::class, 'update']);
+    Route::delete('/user/{id}', [UserController::class, 'destroy']);
+    Route::post('/user/image/{id}', [UserController::class, 'uploadImage']);
 
-//room
-Route::get('/room', [RoomController::class, 'show']);
-Route::post('/room', [RoomController::class, 'store']);
-Route::get('/room/{id}', [RoomController::class, 'detail']);
-Route::put('/room/{id}', [RoomController::class, 'update']);
-Route::delete('/room/{id}', [RoomController::class, 'destroy']);
+    //room type
+    Route::get('/roomtype', [RoomTypeController::class, 'show']);
+    Route::get('/roomtype/{id}', [RoomTypeController::class, 'detail']);
+    Route::post('/roomtype', [RoomTypeController::class, 'store']);
+    Route::put('/roomtype/{id}', [RoomTypeController::class, 'update']);
+    Route::delete('/roomtype/{id}', [RoomTypeController::class, 'destroy']);
+    Route::post('/roomtype/image/{id}', [RoomTypeController::class, 'uploadImage']);
 
-//order
-Route::post('/order', [OrderController::class, 'store']);
+    //room
+    Route::get('/room', [RoomController::class, 'show']);
+    Route::post('/room', [RoomController::class, 'store']);
+    Route::get('/room/{id}', [RoomController::class, 'detail']);
+    Route::put('/room/{id}', [RoomController::class, 'update']);
+    Route::delete('/room/{id}', [RoomController::class, 'destroy']);
+
+    //order
+    Route::post('/order', [OrderController::class, 'store']);
+});
+
+
+
+
+
