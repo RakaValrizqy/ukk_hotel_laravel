@@ -23,8 +23,18 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+//user login
 Route::post('/user', [UserController::class, 'register']);
 Route::post('/user/login', [UserController::class, 'login']);
+
+//guest
+Route::get('/roomtype', [RoomTypeController::class, 'show']);
+Route::get('/roomtype/{id}', [RoomTypeController::class, 'detail']);
+Route::get('/room', [RoomController::class, 'show']);
+Route::get('/room/{id}', [RoomController::class, 'detail']);
+Route::post('/order', [OrderController::class, 'store']);
+
+Route::post('/filter', [OrderController::class, 'filter']);
 
 Route::group(['middleware' => ['jwt.verify']], function(){
     //user
@@ -35,22 +45,20 @@ Route::group(['middleware' => ['jwt.verify']], function(){
     Route::post('/user/image/{id}', [UserController::class, 'uploadImage']);
 
     //room type
-    Route::get('/roomtype', [RoomTypeController::class, 'show']);
-    Route::get('/roomtype/{id}', [RoomTypeController::class, 'detail']);
+    
     Route::post('/roomtype', [RoomTypeController::class, 'store']);
     Route::put('/roomtype/{id}', [RoomTypeController::class, 'update']);
     Route::delete('/roomtype/{id}', [RoomTypeController::class, 'destroy']);
     Route::post('/roomtype/image/{id}', [RoomTypeController::class, 'uploadImage']);
 
     //room
-    Route::get('/room', [RoomController::class, 'show']);
+    
     Route::post('/room', [RoomController::class, 'store']);
-    Route::get('/room/{id}', [RoomController::class, 'detail']);
     Route::put('/room/{id}', [RoomController::class, 'update']);
     Route::delete('/room/{id}', [RoomController::class, 'destroy']);
 
     //order
-    Route::post('/order', [OrderController::class, 'store']);
+    
 });
 
 
