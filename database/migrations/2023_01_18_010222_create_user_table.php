@@ -19,7 +19,7 @@ class CreateUserTable extends Migration
             $table->text('image')->nullable();
             $table->string('email', 100);
             $table->text('password');
-            $table->enum('role', ['admin','resepsionis']);
+            $table->enum('role', ['Admin','Receptionist']);
         });
     }
 
