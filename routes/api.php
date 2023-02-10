@@ -34,7 +34,8 @@ Route::get('/room', [RoomController::class, 'show']);
 Route::get('/room/{id}', [RoomController::class, 'detail']);
 Route::post('/order', [OrderController::class, 'store']);
 
-Route::post('/filter', [OrderController::class, 'filter']);
+Route::post('/room/filter', [RoomTypeController::class, 'filter']);
+Route::post('/detail/{id}', [OrderController::class, 'detail']);
 
 Route::group(['middleware' => ['jwt.verify']], function(){
     //user
