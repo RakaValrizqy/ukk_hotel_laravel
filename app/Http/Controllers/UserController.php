@@ -24,7 +24,7 @@ class UserController extends Controller
             'user_name'=>'required',
             'image' => 'required|image|mimes:jpeg,jpg,png',
             'email'=>'required|email|unique:user',
-            'password'=>'required|confirmed',
+            'password' => 'required|min:8|regex:/^.*(?=.{3,})(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[\d\x])(?=.*[@!$#%]).*$/|confirmed',
             'role'=>'required'
         ]);
 
@@ -78,7 +78,7 @@ class UserController extends Controller
         [
             'user_name'=>'required',
             'email' => "required|email|unique:user,email,$id,user_id",
-            'password'=>'required|confirmed',
+            'password' => 'required|min:8|regex:/^.*(?=.{3,})(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[\d\x])(?=.*[@!$#%]).*$/|confirmed',
             'role'=>'required'
         ]);
 
