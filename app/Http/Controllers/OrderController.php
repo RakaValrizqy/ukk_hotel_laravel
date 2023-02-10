@@ -7,15 +7,14 @@ use App\Models\Order;
 use App\Models\DetailOrder;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
+// use Haruncpi\LaravelIdGenerator\IdGenerator;
 
 class OrderController extends Controller
 {
     public function store(Request $req){
         $valid = Validator::make($req->all(),[
-            'order_number' => 'required|unique:order',
             'customer_name' => 'required',
             'customer_email' => 'required',
-            // 'order_date' => 'required|date',
             'check_in_date' => 'required|date',
             'duration' => 'required|integer',
             'guest_name' => 'required',
@@ -36,22 +35,10 @@ class OrderController extends Controller
         $masuk = new Carbon($req->check_in_date);
         $out = $in->addDays($dur);
 
-        // $save = Order::create([
-        //     'order_number' => $req->order_number,
-        //     'customer_name' => $req->customer_name,
-        //     'customer_email' => $req->customer_email,
-        //     // 'order_date' => $req->order_date,
-        //     'check_in_date' => $req->check_in_date,
-        //     'check_out_date' => $out,
-        //     'guest_name' => $req->guest_name,
-        //     'room_qty' => $req->room_qty,
-        //     'room_type_id' => $req->room_type_id,
-        //     'order_status' => $req->order_status,
-        //     'user_id' => $req->user_id
-        // ]);
+        $latest = Order::orderBy('order_date','DESC')->first();
 
         $order = new Order();
-        $order->order_number = $req->order_number;
+        $order->order_number = 'ORD-NMB-'.str_pad($latest->order_id + 1, 8, "0", STR_PAD_LEFT);
         $order->customer_name = $req->customer_name;
         $order->customer_email = $req->customer_email;
         $order->check_in_date = $req->check_in_date;
@@ -63,21 +50,22 @@ class OrderController extends Controller
         $order->user_id = $req->user_id;
         $order->save();
 
-        //insert detail
+        //insert details
         for($i = 0; $i < $req->duration; $i++){
             $detail = new DetailOrder();
             $detail->order_id = $order->order_id;
             $detail->room_id = $req->room_id;
-            $detail->access_date = $masuk->addDays($i);
+            $detail->access_date = $masuk;
             $detail->price = $req->price;
             $detail->save();
+            $masuk->addDays(1);
         }
 
         if($order && $detail){
             $dt = Order::select('order.*', 'room_type.room_type_id', 'room_type.room_type_name', 'user.user_id', 'user.user_name')
             ->join('room_type', 'room_type.room_type_id', '=', 'order.room_type_id')
             ->join('user', 'user.user_id', '=', 'order.user_id')
-            ->where('order_number', $req->order_number)
+            ->where('order_id', $order->order_id)
             ->get();
             $dt_detail = DetailOrder::where('order_id', $order->order_id)->get();
             return response()->json([
@@ -97,7 +85,6 @@ class OrderController extends Controller
 
     public function detail(Request $req, $id){
         $valid = Validator::make($req->all(),[
-            // 'order_id' => 'required|integer',
             'room_id' => 'required|integer',
             'check_in_date' => 'required|date',
             'duration' => 'required|integer',
