@@ -230,6 +230,16 @@ class RoomTypeController extends Controller
                         ->where('detail_order.access_date', '=', NULL)
                         ->groupBy('room_type.room_type_id')
                         ->get();
+
+        // $avail = DB::table('room_type')
+        //                     ->select('room_type.room_type_name', 'room.room_number', 'detail_order.access_date')
+        //                     ->leftJoin('room', 'room_type.room_type_id', 'room.room_type_id')
+        //                     ->leftJoin('detail_order',  function($join) use($from, $to){
+        //                         $join->on('room.room_id', '=', 'detail_order.room_id')
+        //                         ->whereBetween('detail_order.access_date', [$from, $to]);
+        //                     })
+        //                     ->where('detail_order.access_date', '=', NULL)
+        //                     ->get();
         if($avail){
             return response()->json([
                 'status' => true,
