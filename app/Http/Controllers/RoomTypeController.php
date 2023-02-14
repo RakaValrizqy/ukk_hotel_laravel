@@ -172,18 +172,35 @@ class RoomTypeController extends Controller
                         ->get();
 
         // $avail = DB::table('room_type')
-        //                     ->select('room_type.room_type_name', 'room.room_number', 'detail_order.access_date')
+        //                     ->select('room_type.room_type_name', 'room.room_id', 'room.room_number', 'detail_order.access_date')
         //                     ->leftJoin('room', 'room_type.room_type_id', 'room.room_type_id')
         //                     ->leftJoin('detail_order',  function($join) use($from, $to){
         //                         $join->on('room.room_id', '=', 'detail_order.room_id')
         //                         ->whereBetween('detail_order.access_date', [$from, $to]);
         //                     })
         //                     ->where('detail_order.access_date', '=', NULL)
+        //                     // ->where('room.room_type_id', '=', 2)
+        //                     // ->orderBy('room.room_id')
+        //                     // ->first();
         //                     ->get();
+        
+        $room = DB::table('room_type')
+                            ->select('room_type.room_type_name', 'room.room_id', 'room.room_number', 'detail_order.access_date')
+                            ->leftJoin('room', 'room_type.room_type_id', 'room.room_type_id')
+                            ->leftJoin('detail_order',  function($join) use($from, $to){
+                                $join->on('room.room_id', '=', 'detail_order.room_id')
+                                ->whereBetween('detail_order.access_date', [$from, $to]);
+                            })
+                            ->where('detail_order.access_date', '=', NULL)
+                            ->where('room.room_type_id', '=', 2)
+                            ->orderBy('room.room_id')
+                            ->get();
+
         if($avail){
             return response()->json([
                 'status' => true,
-                'data' => $avail
+                'data' => $avail,
+                'room' => $room
             ]);
         }
     }
