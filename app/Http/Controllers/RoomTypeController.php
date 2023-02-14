@@ -143,63 +143,98 @@ class RoomTypeController extends Controller
         }
     }
 
+    // public function filter(Request $req){
+    //     $valid = Validator::make($req->all(),[
+    //         'check_in' => 'required|date',
+    //         'duration' => 'required|integer',
+    //         'check_out' => 'required|date'
+    //     ]);
+
+    //     if($valid->fails()){
+    //         return response()->json($valid->errors());
+    //     }
+
+    //     $dur = $req->duration;
+    //     $in = Carbon::parse($req->check_in);
+    //     $out = $in->addDays($dur)->format('Y-m-d');
+
+    //     // $dur = $req->duration;
+    //     // $in = Carbon::parse($req->check_in_date);
+    //     // $out = $in->addDays($dur);
+
+    //     // $from = date('2018-01-01');
+    //     // $to = date('2018-05-02');
+
+    //     $from = date($in);
+    //     $to = date($out);
+    //     $startDate = Carbon::createFromFormat('Y-m-d', $req->check_in);
+    //     $endDate = Carbon::createFromFormat('Y-m-d', $req->check_out);
+
+    //     $avail = RoomType::select('room_type.room_type_name', 'room.room_number', 'detail_order.access_date')
+    //                             ->leftJoin('room', 'room.room_type_id', 'room_type.room_type_id')
+    //                             ->leftJoin('detail_order', 'detail_order.room_id', 'room.room_id')
+    //                             // ->whereRaw('detail_order.access_date BETWEEN ' . $req->check_in . ' AND ' . $req->check_out . '')
+    //                             // ->with('detail_order.access_date')
+    //                             // ->between($in, $out)
+    //                             // ->whereBetween('access_date', [$from, $to])
+    //                             // ->whereBetween('access_date', [$from, $to])->get();
+    //                             // ->whereBetween('detail_order.access_date', [$startDate, $endDate])
+    //                             // ->whereDate('detail_order.access_date', '>=', $startDate)
+    //                             // ->whereDate('detail_order.access_date', '<=', $endDate)                                
+                                
+    //                             // ->whereNull('detail_order.access_date')
+    //                             ->get();
+
+    //     // $avail = DB::table('room_type')
+    //     //                     ->select('room_type.room_type_name', 'room.room_number', 'detail_order.access_date')
+    //     //                     ->leftJoin('room', 'room_type.room_type_id', 'room.room_type_id')
+    //     //                     ->leftJoin('detail_order', 'room.room_id', 'detail_order.room_id')
+    //     //                     // ->whereBetween('detail_order.access_date', array($req->check_in, $req->check_out))
+    //     //                     // ->whereBetween('detail_order.access_date', [$startDate, $endDate])
+    //     //                     // ->whereNull('detail_order.access_date')
+    //     //                     ->get();
+
+    //     return response()->json([
+    //         'check_in' => $req->check_in,
+    //         'duration' => $dur,
+    //         'check_out' => $req->check_out,
+    //         'check_out2' => $out,
+    //         'data' => $avail
+    //     ]);
+    // }
+
     public function filter(Request $req){
         $valid = Validator::make($req->all(),[
             'check_in' => 'required|date',
-            'duration' => 'required|integer',
-            'check_out' => 'required|date'
+            'duration' => 'required|integer'
         ]);
 
         if($valid->fails()){
             return response()->json($valid->errors());
         }
 
+        $in = new Carbon($req->check_in);
         $dur = $req->duration;
-        $in = Carbon::parse($req->check_in);
-        $out = $in->addDays($dur)->format('Y-m-d');
+        $out = $in->addDays($dur);
 
-        // $dur = $req->duration;
-        // $in = Carbon::parse($req->check_in_date);
-        // $out = $in->addDays($dur);
-
-        // $from = date('2018-01-01');
-        // $to = date('2018-05-02');
-
-        $from = date($in);
+        $from = date($req->check_in);
         $to = date($out);
-        $startDate = Carbon::createFromFormat('Y-m-d', $req->check_in);
-        $endDate = Carbon::createFromFormat('Y-m-d', $req->check_out);
 
-        $avail = RoomType::select('room_type.room_type_name', 'room.room_number', 'detail_order.access_date')
-                                ->leftJoin('room', 'room.room_type_id', 'room_type.room_type_id')
-                                ->leftJoin('detail_order', 'detail_order.room_id', 'room.room_id')
-                                // ->whereRaw('detail_order.access_date BETWEEN ' . $req->check_in . ' AND ' . $req->check_out . '')
-                                // ->with('detail_order.access_date')
-                                // ->between($in, $out)
-                                // ->whereBetween('access_date', [$from, $to])
-                                // ->whereBetween('access_date', [$from, $to])->get();
-                                // ->whereBetween('detail_order.access_date', [$startDate, $endDate])
-                                // ->whereDate('detail_order.access_date', '>=', $startDate)
-                                // ->whereDate('detail_order.access_date', '<=', $endDate)                                
-                                
-                                // ->whereNull('detail_order.access_date')
-                                ->get();
-
-        // $avail = DB::table('room_type')
-        //                     ->select('room_type.room_type_name', 'room.room_number', 'detail_order.access_date')
-        //                     ->leftJoin('room', 'room_type.room_type_id', 'room.room_type_id')
-        //                     ->leftJoin('detail_order', 'room.room_id', 'detail_order.room_id')
-        //                     // ->whereBetween('detail_order.access_date', array($req->check_in, $req->check_out))
-        //                     // ->whereBetween('detail_order.access_date', [$startDate, $endDate])
-        //                     // ->whereNull('detail_order.access_date')
-        //                     ->get();
-
-        return response()->json([
-            'check_in' => $req->check_in,
-            'duration' => $dur,
-            'check_out' => $req->check_out,
-            'check_out2' => $out,
-            'data' => $avail
-        ]);
+        $avail = DB::table('room')
+                        ->select('room_type.*', DB::raw('count(room.room_id) as available'))
+                        ->leftJoin('room_type', 'room.room_type_id', '=', 'room_type.room_type_id')
+                        ->leftJoin('detail_order', function($join) use($from, $to){
+                            $join->on('room.room_id', '=', 'detail_order.room_id')
+                            ->whereBetween('detail_order.access_date', [$from, $to]);
+                        })
+                        ->where('detail_order.access_date', '=', NULL)
+                        ->groupBy('room_type.room_type_id')
+                        ->get();
+        if($avail){
+            return response()->json([
+                'status' => true,
+                'data' => $avail
+            ]);
+        }
     }
 }
