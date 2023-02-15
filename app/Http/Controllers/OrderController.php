@@ -6,12 +6,9 @@ use Illuminate\Http\Request;
 use App\Models\Order;
 use App\Models\DetailOrder;
 use App\Models\RoomType;
-
-;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
-// use Haruncpi\LaravelIdGenerator\IdGenerator;
 
 class OrderController extends Controller
 {
@@ -24,10 +21,6 @@ class OrderController extends Controller
             'guest_name' => 'required',
             'room_qty' => 'required|integer',
             'room_type_id' => 'required|integer',
-            // 'order_status' => 'required',
-            // 'user_id' => 'required|integer',
-            // 'room_id' => 'required|integer',
-            // 'price' => 'required|integer'
         ]);
 
         if($valid->fails()){
@@ -37,7 +30,6 @@ class OrderController extends Controller
         //var date
         $dur = $req->duration;
         $in = Carbon::parse($req->check_in_date);
-        // $masuk = new Carbon($req->check_in_date);
         $out = $in->addDays($dur);
         $from = date($req->check_in_date);
         $to = date($out);
@@ -49,19 +41,6 @@ class OrderController extends Controller
         $roomType = RoomType::where('room_type_id', '=', $req->room_type_id)
                         ->first();
 
-        //var room terpilih
-        // $room = DB::table('room')
-        //             ->select('room.room_id')
-        //             ->leftJoin('room_type', 'room_type.room_type_id', 'room.room_type_id')
-        //             ->leftJoin('detail_order',  function($join) use($from, $to){
-        //                 $join->on('room.room_id', '=', 'detail_order.room_id')
-        //                 ->whereBetween('detail_order.access_date', [$from, $to]);
-        //             })
-        //             ->where('detail_order.access_date', '=', NULL)
-        //             ->where('room.room_type_id', '=', $req->room_type_id)
-        //             ->orderBy('room.room_id')
-        //             ->first();
-
         $order = new Order();
         $order->order_number = 'ORD-NMB-'.str_pad($latest->order_id + 1, 8, "0", STR_PAD_LEFT);
         $order->customer_name = $req->customer_name;
@@ -72,20 +51,10 @@ class OrderController extends Controller
         $order->room_qty = $req->room_qty;
         $order->room_type_id = $req->room_type_id;
         $order->order_status = 1;
-        // $order->user_id = $req->user_id;
         $order->save();
 
-        //insert details
-        // for($i = 0; $i < $req->duration; $i++){
-        //     $detail = new DetailOrder();
-        //     $detail->order_id = $order->order_id;
-        //     $detail->room_id = $room->room_id;
-        //     $detail->access_date = $masuk;
-        //     $detail->price = $req->price;
-        //     $detail->save();
-        //     $masuk->addDays(1);
-        // }
         for($i = 0; $i < $req->room_qty; $i++){
+            //select room
             $room = DB::table('room')
                     ->select('room.room_id')
                     ->leftJoin('room_type', 'room_type.room_type_id', 'room.room_type_id')
@@ -97,6 +66,7 @@ class OrderController extends Controller
                     ->where('room.room_type_id', '=', $req->room_type_id)
                     ->orderBy('room.room_id')
                     ->first();
+            //reset var access_date
             $masuk = new Carbon($req->check_in_date);
             for($j = 0; $j < $req->duration; $j++){
                 $detail = new DetailOrder();
@@ -112,10 +82,9 @@ class OrderController extends Controller
         if($order && $detail){
             $dt = Order::select('order.*', 'room_type.room_type_id', 'room_type.room_type_name')
             ->join('room_type', 'room_type.room_type_id', '=', 'order.room_type_id')
-            // ->join('user', 'user.user_id', '=', 'order.user_id')
             ->where('order_id', $order->order_id)
             ->get();
-            // $dt_detail = DetailOrder::where('order_id', $order->order_id)->get();
+            
             $dt_detail = DetailOrder::select('detail_order.*', 'room_type.room_type_name', 'room.room_number')
                                     ->join('room', 'detail_order.room_id', '=', 'room.room_id')
                                     ->join('room_type', 'room.room_type_id', '=', 'room_type.room_type_id')
