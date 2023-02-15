@@ -81,10 +81,10 @@ class OrderController extends Controller
 
         if($order && $detail){
             $dt = Order::select('order.*', 'room_type.room_type_id', 'room_type.room_type_name')
-            ->join('room_type', 'room_type.room_type_id', '=', 'order.room_type_id')
-            ->where('order_id', $order->order_id)
-            ->get();
-            
+                        ->join('room_type', 'room_type.room_type_id', '=', 'order.room_type_id')
+                        ->where('order_id', $order->order_id)
+                        ->get();
+
             $dt_detail = DetailOrder::select('detail_order.*', 'room_type.room_type_name', 'room.room_number')
                                     ->join('room', 'detail_order.room_id', '=', 'room.room_id')
                                     ->join('room_type', 'room.room_type_id', '=', 'room_type.room_type_id')
@@ -105,31 +105,33 @@ class OrderController extends Controller
         }
     }
 
-    public function detail(Request $req, $id){
+    public function detail(Request $req){
         $valid = Validator::make($req->all(),[
-            'room_id' => 'required|integer',
-            'check_in_date' => 'required|date',
-            'duration' => 'required|integer',
-            'price' => 'required|integer' 
+            'order_number' => 'required'
         ]);
 
-        $in = new Carbon($req->check_in_date);
-
-        for($i = 0; $i < $req->duration; $i++){
-            $detail = new DetailOrder();
-            $detail->order_id = $id;
-            $detail->room_id = $req->room_id;
-            $detail->access_date = $in->addDays($i);
-            $detail->price = $req->price;
-            $detail->save();
+        if($valid->fails()){
+            return response()->json($valid->errors());
         }
 
-        if($detail){
-            $dt = DetailOrder::where('order_id', $id)->get();
+        if(Order::where('order_number', '=', $req->order_number)->exists()){
+            $order = Order::where('order_number', '=', $req->order_number)->first();
+
+            $dt = Order::select('order.*', 'room_type.room_type_id', 'room_type.room_type_name')
+                ->join('room_type', 'room_type.room_type_id', '=', 'order.room_type_id')
+                ->where('order.order_number', $req->order_number)
+                ->get();
+
+            $dt_detail = DetailOrder::select('detail_order.*', 'room_type.room_type_name', 'room.room_number')
+                ->join('room', 'detail_order.room_id', '=', 'room.room_id')
+                ->join('room_type', 'room.room_type_id', '=', 'room_type.room_type_id')
+                ->where('detail_order.order_id', '=', $order->order_id)
+                ->get();
+
             return response()->json([
                 'status' => true,
-                'message' => 'Succeed',
-                'data' => $dt
+                'data' => $dt,
+                'data_detail' => $dt_detail 
             ]);
         }
     }

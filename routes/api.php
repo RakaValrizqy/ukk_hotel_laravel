@@ -31,8 +31,9 @@ Route::post('/user/login', [UserController::class, 'login']);
 Route::get('/roomtype', [RoomTypeController::class, 'show']);
 Route::get('/roomtype/{id}', [RoomTypeController::class, 'detail']);
 Route::get('/room', [RoomController::class, 'show']);
-Route::get('/room/{id}', [RoomController::class, 'detail']);
+// Route::get('/room/{id}', [RoomController::class, 'detail']);
 Route::post('/order', [OrderController::class, 'store']);
+Route::post('/order/detail', [OrderController::class, 'detail']);
 
 Route::post('/room/filter', [RoomTypeController::class, 'filter']);
 Route::post('/detail/{id}', [OrderController::class, 'detail']);
