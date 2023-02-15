@@ -34,7 +34,7 @@ class OrderController extends Controller
         //var date
         $dur = $req->duration;
         $in = Carbon::parse($req->check_in_date);
-        $masuk = new Carbon($req->check_in_date);
+        // $masuk = new Carbon($req->check_in_date);
         $out = $in->addDays($dur);
         $from = date($req->check_in_date);
         $to = date($out);
@@ -43,17 +43,17 @@ class OrderController extends Controller
         $latest = Order::orderBy('order_date','DESC')->first();
 
         //var room terpilih
-        $room = DB::table('room')
-                    ->select('room.room_id')
-                    ->leftJoin('room_type', 'room_type.room_type_id', 'room.room_type_id')
-                    ->leftJoin('detail_order',  function($join) use($from, $to){
-                        $join->on('room.room_id', '=', 'detail_order.room_id')
-                        ->whereBetween('detail_order.access_date', [$from, $to]);
-                    })
-                    ->where('detail_order.access_date', '=', NULL)
-                    ->where('room.room_type_id', '=', $req->room_type_id)
-                    ->orderBy('room.room_id')
-                    ->first();
+        // $room = DB::table('room')
+        //             ->select('room.room_id')
+        //             ->leftJoin('room_type', 'room_type.room_type_id', 'room.room_type_id')
+        //             ->leftJoin('detail_order',  function($join) use($from, $to){
+        //                 $join->on('room.room_id', '=', 'detail_order.room_id')
+        //                 ->whereBetween('detail_order.access_date', [$from, $to]);
+        //             })
+        //             ->where('detail_order.access_date', '=', NULL)
+        //             ->where('room.room_type_id', '=', $req->room_type_id)
+        //             ->orderBy('room.room_id')
+        //             ->first();
 
         $order = new Order();
         $order->order_number = 'ORD-NMB-'.str_pad($latest->order_id + 1, 8, "0", STR_PAD_LEFT);
@@ -69,14 +69,37 @@ class OrderController extends Controller
         $order->save();
 
         //insert details
-        for($i = 0; $i < $req->duration; $i++){
-            $detail = new DetailOrder();
-            $detail->order_id = $order->order_id;
-            $detail->room_id = $room->room_id;
-            $detail->access_date = $masuk;
-            $detail->price = $req->price;
-            $detail->save();
-            $masuk->addDays(1);
+        // for($i = 0; $i < $req->duration; $i++){
+        //     $detail = new DetailOrder();
+        //     $detail->order_id = $order->order_id;
+        //     $detail->room_id = $room->room_id;
+        //     $detail->access_date = $masuk;
+        //     $detail->price = $req->price;
+        //     $detail->save();
+        //     $masuk->addDays(1);
+        // }
+        for($i = 0; $i < $req->room_qty; $i++){
+            $room = DB::table('room')
+                    ->select('room.room_id')
+                    ->leftJoin('room_type', 'room_type.room_type_id', 'room.room_type_id')
+                    ->leftJoin('detail_order',  function($join) use($from, $to){
+                        $join->on('room.room_id', '=', 'detail_order.room_id')
+                        ->whereBetween('detail_order.access_date', [$from, $to]);
+                    })
+                    ->where('detail_order.access_date', '=', NULL)
+                    ->where('room.room_type_id', '=', $req->room_type_id)
+                    ->orderBy('room.room_id')
+                    ->first();
+            $masuk = new Carbon($req->check_in_date);
+            for($j = 0; $j < $req->duration; $j++){
+                $detail = new DetailOrder();
+                $detail->order_id = $order->order_id;
+                $detail->room_id = $room->room_id;
+                $detail->access_date = $masuk;
+                $detail->price = $req->price;
+                $detail->save();
+                $masuk->addDays(1);
+            }
         }
 
         if($order && $detail){

@@ -192,7 +192,7 @@ class RoomTypeController extends Controller
                                 ->whereBetween('detail_order.access_date', [$from, $to]);
                             })
                             ->where('detail_order.access_date', '=', NULL)
-                            ->where('room.room_type_id', '=', 2)
+                            ->where('room.room_type_id', '=', 1)
                             ->orderBy('room.room_id')
                             ->get();
 
