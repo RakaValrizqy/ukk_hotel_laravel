@@ -25,7 +25,7 @@ class OrderController extends Controller
             'room_qty' => 'required|integer',
             'room_type_id' => 'required|integer',
             // 'order_status' => 'required',
-            'user_id' => 'required|integer',
+            // 'user_id' => 'required|integer',
             // 'room_id' => 'required|integer',
             // 'price' => 'required|integer'
         ]);
@@ -72,7 +72,7 @@ class OrderController extends Controller
         $order->room_qty = $req->room_qty;
         $order->room_type_id = $req->room_type_id;
         $order->order_status = 1;
-        $order->user_id = $req->user_id;
+        // $order->user_id = $req->user_id;
         $order->save();
 
         //insert details
@@ -110,9 +110,9 @@ class OrderController extends Controller
         }
 
         if($order && $detail){
-            $dt = Order::select('order.*', 'room_type.room_type_id', 'room_type.room_type_name', 'user.user_id', 'user.user_name')
+            $dt = Order::select('order.*', 'room_type.room_type_id', 'room_type.room_type_name')
             ->join('room_type', 'room_type.room_type_id', '=', 'order.room_type_id')
-            ->join('user', 'user.user_id', '=', 'order.user_id')
+            // ->join('user', 'user.user_id', '=', 'order.user_id')
             ->where('order_id', $order->order_id)
             ->get();
             // $dt_detail = DetailOrder::where('order_id', $order->order_id)->get();
