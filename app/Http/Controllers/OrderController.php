@@ -24,7 +24,7 @@ class OrderController extends Controller
         ]);
 
         if($valid->fails()){
-            return response()->json($valid->errors());
+            return response()->json($valid->errors()->toJson());
         }
 
         //var date
@@ -36,13 +36,18 @@ class OrderController extends Controller
 
         //var order terakhir
         $latest = Order::orderBy('order_date','DESC')->first();
+        if(is_null($latest)) {
+            $id = 0;
+        } else {
+            $id = $latest->order_id;
+        }
 
         //var price
         $roomType = RoomType::where('room_type_id', '=', $req->room_type_id)
                         ->first();
 
         $order = new Order();
-        $order->order_number = 'ORD-NMB-'.str_pad($latest->order_id + 1, 8, "0", STR_PAD_LEFT);
+        $order->order_number = 'ORD-NMB-'.str_pad($id + 1, 8, "0", STR_PAD_LEFT);
         $order->customer_name = $req->customer_name;
         $order->customer_email = $req->customer_email;
         $order->check_in_date = $req->check_in_date;
@@ -111,7 +116,7 @@ class OrderController extends Controller
         ]);
 
         if($valid->fails()){
-            return response()->json($valid->errors());
+            return response()->json($valid->errors()->toJson());
         }
 
         if(Order::where('order_number', '=', $req->order_number)->exists()){
@@ -135,4 +140,22 @@ class OrderController extends Controller
             ]);
         }
     }
+
+    // public function status(Request $req, $id){
+    //     $valid = Validator::make($req->all(),[
+    //         'order_status' => 'required'
+    //     ]);
+
+    //     if($valid->fails()){
+    //         return response()->json($valid->errors()->toJson());
+    //     }
+
+    //     $update = Order::where('order_id', '=', $id)->update([
+    //         'order_status' => $req->order_status
+    //     ]);
+
+    //     if($update){
+    //         'status'
+    //     }
+    // }
 }

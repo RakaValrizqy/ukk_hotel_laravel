@@ -24,7 +24,7 @@ class CreateOrderTable extends Migration
             $table->string('guest_name');
             $table->integer('room_qty');
             $table->unsignedBigInteger('room_type_id');
-            $table->enum('order_status', ['new', 'check_in', 'check_out']);
+            $table->enum('order_status', ['New', 'Check In', 'Check Out']);
             $table->unsignedBigInteger('user_id')->nullable();
 
             $table->foreign('room_type_id')->references('room_type_id')->on('room_type');
