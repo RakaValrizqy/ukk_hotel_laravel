@@ -146,7 +146,8 @@ class RoomTypeController extends Controller
     public function filter(Request $req){
         $valid = Validator::make($req->all(),[
             'check_in' => 'required|date',
-            'duration' => 'required|integer'
+            'duration' => 'required|integer',
+            'type' => 'integer'
         ]);
 
         if($valid->fails()){
@@ -192,7 +193,7 @@ class RoomTypeController extends Controller
                                 ->whereBetween('detail_order.access_date', [$from, $to]);
                             })
                             ->where('detail_order.access_date', '=', NULL)
-                            ->where('room.room_type_id', '=', 3)
+                            ->where('room.room_type_id', '=', $req->type)
                             ->orderBy('room.room_id')
                             ->get();
 
