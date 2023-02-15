@@ -4,8 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Order;
-use App\Models\DetailOrder;
+use App\Models\DetailOrder;;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 // use Haruncpi\LaravelIdGenerator\IdGenerator;
 
@@ -22,7 +23,7 @@ class OrderController extends Controller
             'room_type_id' => 'required|integer',
             'order_status' => 'required',
             'user_id' => 'required|integer',
-            'room_id' => 'required|integer',
+            // 'room_id' => 'required|integer',
             'price' => 'required|integer'
         ]);
 
@@ -30,12 +31,29 @@ class OrderController extends Controller
             return response()->json($valid->errors());
         }
 
+        //var date
         $dur = $req->duration;
         $in = Carbon::parse($req->check_in_date);
         $masuk = new Carbon($req->check_in_date);
         $out = $in->addDays($dur);
+        $from = date($req->check_in_date);
+        $to = date($out);
 
+        //var order terakhir
         $latest = Order::orderBy('order_date','DESC')->first();
+
+        //var room terpilih
+        $room = DB::table('room')
+                    ->select('room.room_id')
+                    ->leftJoin('room_type', 'room_type.room_type_id', 'room.room_type_id')
+                    ->leftJoin('detail_order',  function($join) use($from, $to){
+                        $join->on('room.room_id', '=', 'detail_order.room_id')
+                        ->whereBetween('detail_order.access_date', [$from, $to]);
+                    })
+                    ->where('detail_order.access_date', '=', NULL)
+                    ->where('room.room_type_id', '=', $req->room_type_id)
+                    ->orderBy('room.room_id')
+                    ->first();
 
         $order = new Order();
         $order->order_number = 'ORD-NMB-'.str_pad($latest->order_id + 1, 8, "0", STR_PAD_LEFT);
@@ -54,7 +72,7 @@ class OrderController extends Controller
         for($i = 0; $i < $req->duration; $i++){
             $detail = new DetailOrder();
             $detail->order_id = $order->order_id;
-            $detail->room_id = $req->room_id;
+            $detail->room_id = $room->room_id;
             $detail->access_date = $masuk;
             $detail->price = $req->price;
             $detail->save();
