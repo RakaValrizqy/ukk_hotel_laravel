@@ -156,7 +156,8 @@ class OrderController extends Controller
 
     public function status(Request $req, $id){
         $valid = Validator::make($req->all(),[
-            'order_status' => 'required'
+            'order_status' => 'required',
+            'user_id' => 'required|integer'
         ]);
 
         if($valid->fails()){
@@ -164,7 +165,8 @@ class OrderController extends Controller
         }
 
         $update = Order::where('order_id', '=', $id)->update([
-            'order_status' => $req->order_status
+            'order_status' => $req->order_status,
+            'user_id' => $req->user_id
         ]);
 
         if($update){
