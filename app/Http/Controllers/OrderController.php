@@ -58,6 +58,8 @@ class OrderController extends Controller
         $order->order_status = 1;
         $order->save();
 
+        //var total
+        $total = 0;
 
         for($i = 0; $i < $req->room_qty; $i++){
             //select room
@@ -80,13 +82,17 @@ class OrderController extends Controller
                 $detail->room_id = $room->room_id;
                 $detail->access_date = $masuk;
                 $detail->price = $roomType->price;
-                
+                $total += $roomType->price;
                 $detail->save();
                 $masuk->addDays(1);
             }
         }
 
-        if($order && $detail){
+        $updateTotal = Order::where('order_id', '=', $order->order_id)->update([
+            'total' => $total
+        ]);
+
+        if($order && $detail && $updateTotal){
             $dt = Order::select('order.*', 'room_type.room_type_id', 'room_type.room_type_name')
                         ->join('room_type', 'room_type.room_type_id', '=', 'order.room_type_id')
                         ->where('order_id', $order->order_id)

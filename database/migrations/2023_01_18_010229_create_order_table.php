@@ -23,6 +23,7 @@ class CreateOrderTable extends Migration
             $table->date('check_out_date');
             $table->string('guest_name');
             $table->integer('room_qty');
+            $table->integer('total')->nullable();
             $table->unsignedBigInteger('room_type_id');
             $table->enum('order_status', ['New', 'Check In', 'Check Out']);
             $table->unsignedBigInteger('user_id')->nullable();
