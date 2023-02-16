@@ -58,6 +58,7 @@ class OrderController extends Controller
         $order->order_status = 1;
         $order->save();
 
+
         for($i = 0; $i < $req->room_qty; $i++){
             //select room
             $room = DB::table('room')
@@ -79,6 +80,7 @@ class OrderController extends Controller
                 $detail->room_id = $room->room_id;
                 $detail->access_date = $masuk;
                 $detail->price = $roomType->price;
+                
                 $detail->save();
                 $masuk->addDays(1);
             }
@@ -110,7 +112,7 @@ class OrderController extends Controller
         }
     }
 
-    public function detail(Request $req){
+    public function findByOrderNumber(Request $req){
         $valid = Validator::make($req->all(),[
             'order_number' => 'required'
         ]);
@@ -138,24 +140,37 @@ class OrderController extends Controller
                 'data' => $dt,
                 'data_detail' => $dt_detail 
             ]);
+        } else {
+            return response()->json([
+                'status' => false,
+                'message' => 'Data Not Found'
+            ]);
         }
     }
 
-    // public function status(Request $req, $id){
-    //     $valid = Validator::make($req->all(),[
-    //         'order_status' => 'required'
-    //     ]);
+    public function status(Request $req, $id){
+        $valid = Validator::make($req->all(),[
+            'order_status' => 'required'
+        ]);
 
-    //     if($valid->fails()){
-    //         return response()->json($valid->errors()->toJson());
-    //     }
+        if($valid->fails()){
+            return response()->json($valid->errors()->toJson());
+        }
 
-    //     $update = Order::where('order_id', '=', $id)->update([
-    //         'order_status' => $req->order_status
-    //     ]);
+        $update = Order::where('order_id', '=', $id)->update([
+            'order_status' => $req->order_status
+        ]);
 
-    //     if($update){
-    //         'status'
-    //     }
-    // }
+        if($update){
+            return response()->json([
+                'status' => true,
+                'message' => 'Succeed update data'
+            ]);
+        } else {
+            return response()->json([
+                'status' => false,
+                'message' => 'Failed update data'
+            ]);
+        }
+    }
 }
