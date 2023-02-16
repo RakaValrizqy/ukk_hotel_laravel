@@ -154,6 +154,25 @@ class OrderController extends Controller
         }
     }
 
+    public function findByName($find){
+        $dt = Order::where('customer_name', 'like', '%'.$find.'%')
+                    ->orWhere('customer_email', 'like', '%'.$find.'%')
+                    ->orWhere('guest_name', 'like', '%'.$find.'%')
+                    ->orWhere('order_number', 'like', '%'.$find.'%')
+                    ->first();
+        if($dt == ''){
+            return response()->json([
+                'status' => false,
+                'message' => 'Data Not Found'
+            ]);
+        } else {
+            return response()->json([
+                'status' => true,
+                'data' => $dt
+            ]);
+        }
+    }
+
     public function status(Request $req, $id){
         $valid = Validator::make($req->all(),[
             'order_status' => 'required',

@@ -61,6 +61,7 @@ Route::group(['middleware' => ['jwt.verify']], function(){
 
     //order
     Route::put('/order/{id}', [OrderController::class, 'status']);
+    Route::get('/order/{find}', [OrderController::class, 'findByName']);
 });
 
 
