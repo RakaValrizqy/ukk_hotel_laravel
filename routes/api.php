@@ -39,29 +39,34 @@ Route::post('/room/filter', [RoomTypeController::class, 'filter']);
 Route::post('/detail/{id}', [OrderController::class, 'detail']);
 
 Route::group(['middleware' => ['jwt.verify']], function(){
-    //user
-    Route::get('/user', [UserController::class, 'show']);
-    Route::get('/user/{id}', [UserController::class, 'detail']);
-    Route::put('/user/{id}', [UserController::class, 'update']);
-    Route::delete('/user/{id}', [UserController::class, 'destroy']);
-    Route::post('/user/image/{id}', [UserController::class, 'uploadImage']);
 
-    //room type
-    
-    Route::post('/roomtype', [RoomTypeController::class, 'store']);
-    Route::put('/roomtype/{id}', [RoomTypeController::class, 'update']);
-    Route::delete('/roomtype/{id}', [RoomTypeController::class, 'destroy']);
-    Route::post('/roomtype/image/{id}', [RoomTypeController::class, 'uploadImage']);
+    Route::group(['middleware' => ['api.admin']], function(){
+        //user
+        Route::get('/user', [UserController::class, 'show']);
+        Route::get('/user/{id}', [UserController::class, 'detail']);
+        Route::put('/user/{id}', [UserController::class, 'update']);
+        Route::delete('/user/{id}', [UserController::class, 'destroy']);
+        Route::post('/user/image/{id}', [UserController::class, 'uploadImage']);
+        
+        //room type
+        Route::post('/roomtype', [RoomTypeController::class, 'store']);
+        Route::put('/roomtype/{id}', [RoomTypeController::class, 'update']);
+        Route::delete('/roomtype/{id}', [RoomTypeController::class, 'destroy']);
+        Route::post('/roomtype/image/{id}', [RoomTypeController::class, 'uploadImage']);
 
-    //room
-    
-    Route::post('/room', [RoomController::class, 'store']);
-    Route::put('/room/{id}', [RoomController::class, 'update']);
-    Route::delete('/room/{id}', [RoomController::class, 'destroy']);
+        //room
+        Route::post('/room', [RoomController::class, 'store']);
+        Route::put('/room/{id}', [RoomController::class, 'update']);
+        Route::delete('/room/{id}', [RoomController::class, 'destroy']);
+    });
 
-    //order
-    Route::put('/order/{id}', [OrderController::class, 'status']);
-    Route::get('/order/{find}', [OrderController::class, 'findByName']);
+    Route::group(['middleware' => ['api.receptionist']], function(){
+        //order
+        Route::get('/order', [OrderController::class, 'show']);
+        Route::put('/order/{id}', [OrderController::class, 'status']);
+        Route::get('/order/{find}', [OrderController::class, 'findByName']);
+        //-tgl checkin
+    });
 });
 
 

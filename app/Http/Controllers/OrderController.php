@@ -200,4 +200,20 @@ class OrderController extends Controller
             ]);
         }
     }
+
+    public function show(){
+        $dt = Order::all();
+
+        if( $dt = ''){
+            return response()->json([
+                'status' => true,
+                'data' => $dt
+            ]);
+        } else {
+            return response()->json([
+                'status' => false,
+                'message' => 'Data Not Found'
+            ]);
+        }
+    }
 }
