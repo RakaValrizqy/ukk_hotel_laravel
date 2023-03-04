@@ -27,15 +27,14 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::post('/user', [UserController::class, 'register']);
 Route::post('/user/login', [UserController::class, 'login']);
 
-//guest
+//get tipe kamar yang tersedia guest
+Route::post('/room/filter', [RoomTypeController::class, 'filter']);
 Route::get('/roomtype', [RoomTypeController::class, 'show']);
 Route::get('/roomtype/{id}', [RoomTypeController::class, 'detail']);
 Route::get('/room', [RoomController::class, 'show']);
-// Route::get('/room/{id}', [RoomController::class, 'detail']);
 Route::post('/order', [OrderController::class, 'store']);
-Route::post('/order/detail', [OrderController::class, 'findByOrderNumber']);
-
-Route::post('/room/filter', [RoomTypeController::class, 'filter']);
+//find by order number
+Route::post('/order/number', [OrderController::class, 'findByOrderNumber']);
 Route::post('/detail/{id}', [OrderController::class, 'detail']);
 
 Route::group(['middleware' => ['jwt.verify']], function(){
@@ -64,7 +63,7 @@ Route::group(['middleware' => ['jwt.verify']], function(){
         //order
         Route::get('/order', [OrderController::class, 'show']);
         Route::put('/order/{id}', [OrderController::class, 'status']);
-        Route::get('/order/{find}', [OrderController::class, 'findByName']);
+        Route::post('/order/name', [OrderController::class, 'findByName']);
         //-tgl checkin
     });
 });

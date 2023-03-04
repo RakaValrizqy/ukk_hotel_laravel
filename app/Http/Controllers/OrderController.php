@@ -154,21 +154,45 @@ class OrderController extends Controller
         }
     }
 
-    public function findByName($find){
-        $dt = Order::where('customer_name', 'like', '%'.$find.'%')
-                    ->orWhere('customer_email', 'like', '%'.$find.'%')
-                    ->orWhere('guest_name', 'like', '%'.$find.'%')
-                    ->orWhere('order_number', 'like', '%'.$find.'%')
-                    ->first();
-        if($dt == ''){
-            return response()->json([
-                'status' => false,
-                'message' => 'Data Not Found'
-            ]);
-        } else {
+    public function findByName(Request $req){
+        $valid = Validator::make($req->all(),[
+            'name' => 'string',
+            'date' => 'date'
+        ]);
+
+        $dt= [];
+
+        if($req->date != null && $req->name != null){
+            $dt = Order::where('guest_name', 'like', '%'.$req->name.'%')
+            // ->orWhere('customer_email', 'like', '%'.$req->name.'%')
+            // ->orWhere('guest_name', 'like', '%'.$req->name.'%')
+            // ->orWhere('order_number', 'like', '%'.$req->name.'%')
+            ->where('check_in_date', '=', $req->date)
+            ->get();
+        }
+
+        if($req->name == null){
+            $dt = Order::where('check_in_date', '=', $req->date)
+                ->get();
+        }
+
+        if($req->date == null){
+            $dt = Order::where('guest_name', 'like', '%'.$req->name.'%')
+                // ->orWhere('customer_email', 'like', '%'.$req->name.'%')
+                // ->orWhere('guest_name', 'like', '%'.$req->name.'%')
+                // ->orWhere('order_number', 'like', '%'.$req->name.'%')
+                ->get();
+        }
+        
+        if(sizeof($dt)){
             return response()->json([
                 'status' => true,
                 'data' => $dt
+            ]);
+        } else {
+            return response()->json([
+                'status' => false,
+                'message' => 'Data Not Found'
             ]);
         }
     }
