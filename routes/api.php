@@ -34,7 +34,7 @@ Route::get('/roomtype/{id}', [RoomTypeController::class, 'detail']);
 Route::get('/room', [RoomController::class, 'show']);
 Route::post('/order', [OrderController::class, 'store']);
 //find by order number
-Route::post('/order/number', [OrderController::class, 'findByOrderNumber']);
+Route::post('/order/find/number', [OrderController::class, 'findByOrderNumber']);
 Route::post('/detail/{id}', [OrderController::class, 'detail']);
 
 Route::group(['middleware' => ['jwt.verify']], function(){
@@ -63,7 +63,7 @@ Route::group(['middleware' => ['jwt.verify']], function(){
         //order
         Route::get('/order', [OrderController::class, 'show']);
         Route::put('/order/{id}', [OrderController::class, 'status']);
-        Route::post('/order/name', [OrderController::class, 'findByName']);
+        Route::post('/order/find', [OrderController::class, 'findByName']);
         //-tgl checkin
     });
 });
