@@ -44,6 +44,7 @@ class RoomController extends Controller
     public function show(){
         $dt = Room::select('room.*', 'room_type.*')
                 ->join('room_type', 'room_type.room_type_id', '=', 'room.room_type_id')
+                ->orderBy('room_number', 'ASC')
                 ->get();
         return response()->json($dt);
     }

@@ -38,6 +38,7 @@ Route::post('/order/find/number', [OrderController::class, 'findByOrderNumber'])
 Route::post('/detail/{id}', [OrderController::class, 'detail']);
 
 Route::group(['middleware' => ['jwt.verify']], function(){
+    Route::get('/login/check', [UserController::class, 'getAuthenticatedUser']);
 
     Route::group(['middleware' => ['api.admin']], function(){
         //user
