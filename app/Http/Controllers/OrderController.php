@@ -163,21 +163,27 @@ class OrderController extends Controller
         $dt= [];
 
         if($req->date != null && $req->name != null){
-            $dt = Order::where('guest_name', 'like', '%'.$req->name.'%')
-            // ->orWhere('customer_email', 'like', '%'.$req->name.'%')
-            // ->orWhere('guest_name', 'like', '%'.$req->name.'%')
-            // ->orWhere('order_number', 'like', '%'.$req->name.'%')
-            ->where('check_in_date', '=', $req->date)
-            ->get();
+            $dt = Order::select('order.*', 'room_type.room_type_id', 'room_type.room_type_name')
+                        ->where('guest_name', 'like', '%'.$req->name.'%')
+                        ->join('room_type', 'room_type.room_type_id', '=', 'order.room_type_id')
+                        // ->orWhere('customer_email', 'like', '%'.$req->name.'%')
+                        // ->orWhere('guest_name', 'like', '%'.$req->name.'%')
+                        // ->orWhere('order_number', 'like', '%'.$req->name.'%')
+                        ->where('check_in_date', '=', $req->date)
+                        ->get();
         }
 
         if($req->name == null){
-            $dt = Order::where('check_in_date', '=', $req->date)
+            $dt = Order::select('order.*', 'room_type.room_type_id', 'room_type.room_type_name')
+                ->where('check_in_date', '=', $req->date)
+                ->join('room_type', 'room_type.room_type_id', '=', 'order.room_type_id')
                 ->get();
         }
 
         if($req->date == null){
-            $dt = Order::where('guest_name', 'like', '%'.$req->name.'%')
+            $dt = Order::select('order.*', 'room_type.room_type_id', 'room_type.room_type_name')
+                ->where('guest_name', 'like', '%'.$req->name.'%')
+                ->join('room_type', 'room_type.room_type_id', '=', 'order.room_type_id')
                 // ->orWhere('customer_email', 'like', '%'.$req->name.'%')
                 // ->orWhere('guest_name', 'like', '%'.$req->name.'%')
                 // ->orWhere('order_number', 'like', '%'.$req->name.'%')
@@ -226,9 +232,10 @@ class OrderController extends Controller
     }
 
     public function show(){
-        $dt = Order::all();
-
-        if( $dt = ''){
+        $dt = Order::select('order.*', 'room_type.room_type_id', 'room_type.room_type_name')
+                ->join('room_type', 'room_type.room_type_id', '=', 'order.room_type_id')
+                ->get();
+        if(sizeof($dt)){
             return response()->json([
                 'status' => true,
                 'data' => $dt
