@@ -120,7 +120,8 @@ class OrderController extends Controller
 
     public function findByOrderNumber(Request $req){
         $valid = Validator::make($req->all(),[
-            'order_number' => 'required'
+            'order_number' => 'required',
+            'email' => 'required|email'
         ]);
 
         if($valid->fails()){
@@ -129,23 +130,31 @@ class OrderController extends Controller
 
         if(Order::where('order_number', '=', $req->order_number)->exists()){
             $order = Order::where('order_number', '=', $req->order_number)->first();
+            if($req->email == $order->customer_email){
+                $dt = Order::select('order.*', 'room_type.room_type_id', 'room_type.room_type_name')
+                    ->join('room_type', 'room_type.room_type_id', '=', 'order.room_type_id')
+                    ->where('order.order_number', $req->order_number)
+                    ->get();
 
-            $dt = Order::select('order.*', 'room_type.room_type_id', 'room_type.room_type_name')
-                ->join('room_type', 'room_type.room_type_id', '=', 'order.room_type_id')
-                ->where('order.order_number', $req->order_number)
-                ->get();
+                $dt_detail = DetailOrder::select('detail_order.*', 'room_type.room_type_name', 'room.room_number')
+                    ->join('room', 'detail_order.room_id', '=', 'room.room_id')
+                    ->join('room_type', 'room.room_type_id', '=', 'room_type.room_type_id')
+                    ->where('detail_order.order_id', '=', $order->order_id)
+                    ->get();
 
-            $dt_detail = DetailOrder::select('detail_order.*', 'room_type.room_type_name', 'room.room_number')
-                ->join('room', 'detail_order.room_id', '=', 'room.room_id')
-                ->join('room_type', 'room.room_type_id', '=', 'room_type.room_type_id')
-                ->where('detail_order.order_id', '=', $order->order_id)
-                ->get();
+                return response()->json([
+                    'status' => true,
+                    'message' => 'Data Found!',
+                    'data' => $dt,
+                    'data_detail' => $dt_detail 
+                ]);
+            } else {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Email does not match, please check again'
+                ]);
+            }
 
-            return response()->json([
-                'status' => true,
-                'data' => $dt,
-                'data_detail' => $dt_detail 
-            ]);
         } else {
             return response()->json([
                 'status' => false,
