@@ -192,6 +192,10 @@ class OrderController extends Controller
             'date' => 'date'
         ]);
 
+        if($valid->fails()){
+            return response()->json($valid->errors()->toJson());
+        }
+
         $dt= [];
 
         if($req->date != null && $req->name != null){
