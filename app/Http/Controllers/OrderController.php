@@ -175,28 +175,26 @@ class OrderController extends Controller
             $dt = Order::select('order.*', 'room_type.room_type_id', 'room_type.room_type_name')
                         ->where('guest_name', 'like', '%'.$req->name.'%')
                         ->join('room_type', 'room_type.room_type_id', '=', 'order.room_type_id')
-                        // ->orWhere('customer_email', 'like', '%'.$req->name.'%')
-                        // ->orWhere('guest_name', 'like', '%'.$req->name.'%')
-                        // ->orWhere('order_number', 'like', '%'.$req->name.'%')
                         ->where('check_in_date', '=', $req->date)
                         ->get();
         }
 
-        if($req->name == null){
+        elseif($req->name == null && $req->date != null){
             $dt = Order::select('order.*', 'room_type.room_type_id', 'room_type.room_type_name')
-                ->where('check_in_date', '=', $req->date)
-                ->join('room_type', 'room_type.room_type_id', '=', 'order.room_type_id')
-                ->get();
+                        ->where('check_in_date', '=', $req->date)
+                        ->join('room_type', 'room_type.room_type_id', '=', 'order.room_type_id')
+                        ->get();
         }
 
-        if($req->date == null){
+        elseif($req->date == null && $req->name != null){
             $dt = Order::select('order.*', 'room_type.room_type_id', 'room_type.room_type_name')
-                ->where('guest_name', 'like', '%'.$req->name.'%')
-                ->join('room_type', 'room_type.room_type_id', '=', 'order.room_type_id')
-                // ->orWhere('customer_email', 'like', '%'.$req->name.'%')
-                // ->orWhere('guest_name', 'like', '%'.$req->name.'%')
-                // ->orWhere('order_number', 'like', '%'.$req->name.'%')
-                ->get();
+                        ->where('guest_name', 'like', '%'.$req->name.'%')
+                        ->join('room_type', 'room_type.room_type_id', '=', 'order.room_type_id')
+                        ->get();
+        } else {
+            $dt = Order::select('order.*', 'room_type.room_type_id', 'room_type.room_type_name')
+                        ->join('room_type', 'room_type.room_type_id', '=', 'order.room_type_id')
+                        ->get();
         }
         
         if(sizeof($dt)){
