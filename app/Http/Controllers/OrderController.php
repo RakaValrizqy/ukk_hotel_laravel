@@ -34,6 +34,28 @@ class OrderController extends Controller
         $from = date($req->check_in_date);
         $to = date($out);
 
+        //var banyak kamar yang tersedia pada tipe kamar yang dipilih
+        $avail = DB::table('room')
+                        ->select('room_type.*', DB::raw('count(room.room_id) as available'))
+                        ->leftJoin('room_type', 'room.room_type_id', '=', 'room_type.room_type_id')
+                        ->leftJoin('detail_order', function($join) use($from, $to){
+                            $join->on('room.room_id', '=', 'detail_order.room_id')
+                            ->whereBetween('detail_order.access_date', [$from, $to]);
+                        })
+                        ->where('detail_order.access_date', '=', NULL)
+                        ->where('room.room_type_id', $req->room_type_id)
+                        ->groupBy('room_type.room_type_id')
+                        ->first();
+        $availRoom = $avail->available;
+
+        //percabangan jika yang dipesan lebih banyak dari yang tersedia
+        if($req->room_qty > $availRoom){
+            return response()->json([
+                'status' => false,
+                'message' => 'Not enough room for your order'
+            ]);
+        }
+
         //var order terakhir
         $latest = Order::orderBy('order_date','DESC')->first();
         if(is_null($latest)) {
