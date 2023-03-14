@@ -165,17 +165,6 @@ class OrderController extends Controller
                                     ->distinct()
                                     ->get();
 
-                // $data = array_merge($dt,$room);
-                // foreach($room->room_number as $number){
-                //     $data = $dt->merge($number); 
-                // }
-                // foreach($room->room as $number){
-                //     $data = $dt->merge($number->room_number); 
-                // }
-                // for($i=0; $i<$order->room_qty; $i++){
-                //     $data = $dt->merge($room);
-                // }
-
                 return response()->json([
                     'status' => true,
                     'message' => 'Data Found!',
