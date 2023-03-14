@@ -158,17 +158,18 @@ class OrderController extends Controller
                     ->where('order.order_number', $req->order_number)
                     ->get();
 
-                $dt_detail = DetailOrder::select('detail_order.*', 'room_type.room_type_name', 'room.room_number')
-                    ->join('room', 'detail_order.room_id', '=', 'room.room_id')
-                    ->join('room_type', 'room.room_type_id', '=', 'room_type.room_type_id')
-                    ->where('detail_order.order_id', '=', $order->order_id)
-                    ->get();
+                $room = DetailOrder::select('room.room_number')
+                                    ->join('room', 'detail_order.room_id', '=', 'room.room_id')
+                                    ->join('room_type', 'room.room_type_id', '=', 'room_type.room_type_id')
+                                    ->where('detail_order.order_id', '=', $order->order_id)
+                                    ->distinct()
+                                    ->get();
 
                 return response()->json([
                     'status' => true,
                     'message' => 'Data Found!',
                     'data' => $dt,
-                    'data_detail' => $dt_detail 
+                    'room' => $room 
                 ]);
             } else {
                 return response()->json([
