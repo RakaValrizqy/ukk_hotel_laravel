@@ -253,9 +253,12 @@ class OrderController extends Controller
         ]);
 
         if($update){
+            $dt = Order::where('order_id', '=', $id)
+                        ->get();
             return response()->json([
                 'status' => true,
-                'message' => 'Succeed update data'
+                'message' => 'Succeed update data',
+                'data' => $dt
             ]);
         } else {
             return response()->json([
