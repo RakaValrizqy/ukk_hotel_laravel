@@ -57,7 +57,7 @@ class OrderController extends Controller
         }
 
         //var order terakhir
-        $latest = Order::orderBy('order_date','DESC')->first();
+        $latest = Order::orderBy('order_id','DESC')->first();
         if(is_null($latest)) {
             $id = 0;
         } else {
@@ -66,7 +66,7 @@ class OrderController extends Controller
 
         //var price
         $roomType = RoomType::where('room_type_id', '=', $req->room_type_id)
-                        ->first();
+                            ->first();
 
         $order = new Order();
         $order->order_number = 'ORD-NMB-'.str_pad($id + 1, 8, "0", STR_PAD_LEFT);

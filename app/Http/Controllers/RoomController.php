@@ -64,7 +64,7 @@ class RoomController extends Controller
 
     public function update($id, Request $req){
         $validator = Validator::make($req->all(),[
-            'room_number' => 'required',
+            'room_number' => 'required|unique:room,room_number,$id,room_id',
             'room_type_id' =>'required'
         ]);
 
